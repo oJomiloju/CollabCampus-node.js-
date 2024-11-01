@@ -69,11 +69,7 @@ const Home = () => {
             >
               {/* Post Image */}
               <div className="md:w-1/3 p-4">
-                <img
-                  src={post.img || icode}
-                  alt={post.title}
-                  className="w-full h-auto max-h-64 object-cover rounded-md shadow-lg"
-                />
+              <img src={post.postimg ? `./upload/${post.postimg}` : icode} alt={post.title} className="w-full h-auto max-h-64 object-cover rounded-md shadow-lg" />
               </div>
 
               {/* Post Content */}

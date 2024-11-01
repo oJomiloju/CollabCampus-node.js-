@@ -20,6 +20,7 @@ const Single = () => {
         // Fetch current post
         const res = await axios.get(`http://localhost:8800/api/posts/${postId}`);
         const postData = res.data;
+        console.log(postData)
         setPost(postData);
 
         // Fetch all posts to find similar ones
@@ -38,12 +39,14 @@ const Single = () => {
 
   const handleDelete = async () => {
     try {
-      await axios.delete(`http://localhost:8800/api/posts/${postId}`);
+      await axios.delete(`http://localhost:8800/api/posts/${postId}`, {
+        withCredentials: true,
+      });
       navigate('/home');
     } catch (error) {
-      console.error("Error deleting post:", error);
+      console.error("Error deleting post:", error.response ? error.response.data : error.message);
     }
-  };
+  };  
 
   return (
     <div className="container mx-auto p-4">
@@ -52,7 +55,7 @@ const Single = () => {
         <div className="md:w-2/3 p-4">
           <div className="w-full">
             <img 
-              src={post?.postimg || icode} 
+              src={post.postimg ? `../upload/${post.postimg}` : icode}
               alt={post.title} 
               className="w-full h-64 object-cover rounded-lg shadow-lg" 
             />
@@ -65,11 +68,12 @@ const Single = () => {
               <span className="ml-2 text-gray-900 font-semibold">{post.username}</span>
             </div>
             <p className="text-gray-700 mb-6 leading-relaxed">{post.desc}</p>
+            <p className="text-gray-700 mb-6 leading-relaxed">{post.longdesc}</p>
 
             {currentUser.username === post.username && (
               <div>
                 <button className="bg-green-700 text-white px-3 py-1 rounded hover:bg-green-600 mt-4">
-                  <Link to={`/write?edit=2`}>Edit</Link>
+                <Link to={`/write/${postId}`} state={post}>Edit</Link>
                 </button>
                 <button onClick={handleDelete} className="bg-red-700 text-white px-3 py-1 rounded hover:bg-red-600 mt-4 ml-2">
                   Delete
@@ -98,7 +102,7 @@ const Single = () => {
               <div key={proj.id} className="flex items-start border-b pb-4">
                 <div className="w-24 h-24 mr-4">
                   <img 
-                    src={proj.postimg || icode} 
+                    src={post.postimg ? `../upload/${post.postimg}` : icode}
                     alt={proj.title} 
                     className="w-full h-full object-cover rounded-lg shadow-md" 
                   />

@@ -1,14 +1,19 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const Write = () => {
   // States to handle form inputs
-  const [title, setTitle] = useState('');
-  const [shortDesc, setShortDesc] = useState('');
-  const [longDesc, setLongDesc] = useState('');
-  const [category, setCategory] = useState('');
+  const state = useLocation().state;
+  const navigate = useNavigate();
+  const postId = location.pathname.split("/")[2];
+  const [title, setTitle] = useState(state?.title || "");
+  const [shortDesc, setShortDesc] = useState(state?.desc || "");
+  const [longDesc, setLongDesc] = useState(state?.longdesc || "");
+  const [category, setCategory] = useState(state?.category || "");
   const [image, setImage] = useState(null); // State for the uploaded image
-  const [status, setStatus] = useState(''); // This will show feedback after an action
+  const [status, setStatus] = useState(""); // This will show feedback after an action
 
   // List of categories
   const categories = [
@@ -20,46 +25,62 @@ const Write = () => {
     'Nursing'
   ];
 
-  // Handle form submit (for each button's functionality)
-  const handlePublish = async e => {
+  // Handle submit for both publish and update
+  const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
+    if (!title || !shortDesc || !longDesc || !category) {
+      setStatus("Please fill out all required fields.");
+      return;
+    }
+
     if (image) {
       try {
         const formData = new FormData();
         formData.append('file', image);
-  
+
         // Send image to the backend
         const res = await axios.post("http://localhost:8800/api/upload", formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          }
+          headers: { "Content-Type": "multipart/form-data" },
         });
-  
+
         if (res.status === 200) {
-          setStatus('Published successfully!');
+          const filename = res.data;
+          // If state exists, perform an update, otherwise, publish
+          try {
+            state 
+            ? await axios.put(`http://localhost:8800/api/posts/${postId}`, {
+                title,
+                shortDesc,
+                longDesc,
+                category,
+                postimg: filename,
+              }, { withCredentials: true })
+            : await axios.post(`http://localhost:8800/api/posts`, {
+                title,
+                shortDesc,
+                longDesc,
+                category,
+                postimg: filename,
+                date: Date.now(),
+              }, { withCredentials: true });
+              navigate('/home');
+          }
+          catch(err) {
+            console.log(err)
+          }
         } else {
           setStatus('Failed to upload image.');
         }
-  
+
       } catch (err) {
-        console.error("Error uploading image:", err.message); // Log only the message
-        setStatus(`Failed: ${err.response?.data || "Unknown error"}`); // Better error message handling
+        console.error("Error uploading image:", err.message);
+        setStatus(`Failed: ${err.response?.data || "Unknown error"}`);
       }
     } else {
       setStatus('No image selected.');
     }
-  };
-  
-
-  const handleSaveDraft = () => {
-    setStatus('Saved as draft!');
-    // Handle saving as draft
-  };
-
-  const handleUpdate = () => {
-    setStatus('Updated successfully!');
-    // Handle updating post 
+    navigate('/home');
   };
 
   // Handle image change and store it in state
@@ -69,7 +90,7 @@ const Write = () => {
 
   return (
     <div className="container mx-auto p-4 max-w-2xl">
-      <h1 className="text-3xl font-bold mb-6">Create New Post</h1>
+      <h1 className="text-3xl font-bold mb-6">{state ? 'Edit Post' : 'Create New Post'}</h1>
 
       {/* Title input */}
       <div className="mb-4">
@@ -148,25 +169,19 @@ const Write = () => {
         </div>
       )}
 
-      {/* Buttons for actions */}
+      {/* Submit button for both actions */}
       <div className="flex space-x-4 mt-4">
         <button
-          className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-500"
-          onClick={handlePublish}
+          className={`${state ? 'bg-green-600' : 'bg-blue-600'} text-white px-4 py-2 rounded-lg hover:${state ? 'bg-green-500' : 'bg-blue-500'}`}
+          onClick={handleSubmit}
         >
-          Publish
+          {state ? 'Update' : 'Publish'}
         </button>
         <button
           className="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-500"
-          onClick={handleSaveDraft}
+          onClick={() => setStatus('Saved as draft!')}
         >
           Save as Draft
-        </button>
-        <button
-          className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-500"
-          onClick={handleUpdate}
-        >
-          Update
         </button>
       </div>
 

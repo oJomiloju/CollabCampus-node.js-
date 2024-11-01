@@ -18,6 +18,7 @@ const App = () => {
         <Route path='/login' element={<Login/>}/>
         <Route path="/post/:id" element={<Single />} />
         <Route path='/write' element={<Write/>}/>
+        <Route path='/write/:postId' element={<Write/>}/>
       </Route>
 
     )

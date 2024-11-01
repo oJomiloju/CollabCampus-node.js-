@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import { useContext, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/authContext';
 
@@ -28,7 +28,7 @@ const Navbar = () => {
               <Link to="/home" className="text-green-700 hover:text-green-600">
                 Home
               </Link>
-              <Link to="/post" className="text-green-700 hover:text-green-600">
+              <Link to="/write" className="text-green-700 hover:text-green-600">
                 Post
               </Link>
               <Link to="/contact" className="text-green-700 hover:text-green-600">
@@ -101,7 +101,7 @@ const Navbar = () => {
               Home
             </Link>
             <Link
-              to="/post"
+              to="/write"
               className="block py-2 px-4 text-center text-xl font-bold text-green-700 hover:text-green-500"
             >
               Post
