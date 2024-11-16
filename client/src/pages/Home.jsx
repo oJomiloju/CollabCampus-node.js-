@@ -14,8 +14,9 @@ const Home = () => {
         if (!res.ok) throw new Error("Failed to fetch posts");
 
         const data = await res.json();
-        setAllPosts(data); // Store all posts in state
-        setFilteredPosts(data); // Initially show all posts
+        const reversedData = data.reverse(); // Reverse the data array
+        setAllPosts(reversedData); // Store reversed posts in state
+        setFilteredPosts(reversedData); // Initially show reversed posts
       } catch (error) {
         console.error("Error fetching posts:", error);
       }

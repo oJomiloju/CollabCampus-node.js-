@@ -40,9 +40,9 @@ const Navbar = () => {
               >
                 Logout
               </button>
-              <Link to="/profile" className="text-green-700 hover:text-green-600">
+              <Link to={`/profile/${currentUser.id}`} className="text-green-700 hover:text-green-600">
                 {currentUser.username}
-              </Link>
+            </Link>
             </>
           ) : (
             <>
@@ -118,12 +118,9 @@ const Navbar = () => {
             >
               Logout
             </Link>
-            <Link
-              to="/profile"
-              className="block py-2 px-4 text-center text-xl font-bold text-green-700 hover:text-green-500"
-            >
-              {currentUser.username}
-            </Link>
+            <Link to={`/profile/${currentUser.id}`} className="block py-2 px-4 text-center text-xl font-bold text-green-700 hover:text-green-500">
+  {currentUser.username}
+</Link>
           </>
         ) : (
           <>

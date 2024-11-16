@@ -2,6 +2,7 @@ import express from "express";
 import postRoutes from "./routes/posts.js";
 import authRoutes from "./routes/auth.js";
 import userRoutes from "./routes/users.js";
+import profileRoutes from "./routes/profile.js";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import multer from "multer";
@@ -40,6 +41,7 @@ app.post('/api/upload', upload.single('file'), (req, res) => {
 app.use("/api/posts", postRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api/profile", profileRoutes);
 
 // Test route
 app.get("/test", (req, res) => {

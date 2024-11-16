@@ -7,6 +7,7 @@ import Single from './pages/Single';
 import Write from './pages/Write';
 import MainLayout from './Layouts/MainLayout';
 import HomePage from './pages/HomePage';
+import Profile from './pages/Profile';
 
 const App = () => {
   const router = createBrowserRouter(
@@ -19,6 +20,7 @@ const App = () => {
         <Route path="/post/:id" element={<Single />} />
         <Route path='/write' element={<Write/>}/>
         <Route path='/write/:postId' element={<Write/>}/>
+        <Route path="/profile/:id" element={<Profile />}/>
       </Route>
 
     )
@@ -26,4 +28,4 @@ const App = () => {
   return <RouterProvider router={router}/>  
 }
 
-export default App
+export default App;
